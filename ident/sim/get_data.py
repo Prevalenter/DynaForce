@@ -1,0 +1,160 @@
+
+import sys
+import logging
+import math
+# import gym
+# from gym import spaces
+# from gym.utils import seeding
+import numpy as np
+import pybullet as p2
+from pybullet_utils import bullet_client as bc
+import warnings
+
+import matplotlib.pyplot as plt
+
+import time
+from scipy.spatial.transform import Rotation as R
+
+import pybullet_data
+
+if __name__ == '__main__':
+
+    theta = np.arange(0, 6*np.pi, 6*np.pi/1000)
+    # print(theta)
+
+    y = np.sin(theta)*0.4
+    z = np.cos(theta)*0.4+0.6
+    x = np.ones(1000)*0.8
+
+    data = np.array([x, y, z]).transpose((1, 0))
+
+
+    taget_xyz = np.array([0.8, -0.2, 0.8])
+
+    p = bc.BulletClient(connection_mode=p2.GUI)
+    p.setAdditionalSearchPath(pybullet_data.getDataPath())
+    planeId = p.loadURDF("plane.urdf")
+
+    p.setGravity(0, 0, -10)
+
+    # robot_urdf_path = 'drop/drop-a6-V2.urdf'
+    # robotId = p.loadURDF(robot_urdf_path, [0,0,0], useFixedBase=1, globalScaling=2)
+    hand_urdf_path = '../../isaac/assets/hand2hand/GX11promax/urdf/GX11promax.urdf'
+    robotId = p.loadURDF(hand_urdf_path, [0,0,0.3], 
+                         baseOrientation=p.getQuaternionFromEuler([np.pi/2, 0, 0]),
+                         useFixedBase=1, globalScaling=2)
+
+    print('getDynamicsInfo')
+    for i in range(6):
+        p.changeDynamics(robotId, i, lateralFriction=0.0)
+        dynamic_info = p.getDynamicsInfo(robotId, i)
+        print(dynamic_info[1], dynamic_info[6], dynamic_info[7])
+
+    print(p.getNumJoints(robotId))
+
+    p.resetDebugVisualizerCamera(cameraDistance=1.5, cameraYaw=-125,
+                         cameraPitch=-145, cameraTargetPosition=[0, 0, 0])
+
+    zero_list = [0]*6
+    r_k = np.array([0]*6)
+    delta_t = 1/240
+    M_theta_prev = None
+    theta_prev = None
+    theta_dot_prev = None
+
+    K = np.diag([1e6]*6)
+    print(K)
+    r = R.from_rotvec(np.array([180, 0, 0])*np.pi/180).as_quat()
+    sensor = []
+    contact = []
+    force_dynamic = []
+
+    coriolis_list = []
+    mass_matrix_list= []
+    gravity_list = []
+    joint_p_list = []
+    tau_list = []
+
+    r_ka1_list = []
+    for t in range(int(1e5)):
+        if t%50==0: print(t)
+
+        sensor_t = []
+        for joint_idx in range(6):
+            joint_state = p.getJointState(robotId, joint_idx)
+            # get joint position, velocity and torque
+            sensor_t.append([joint_state[0], joint_state[1], joint_state[3]])
+        sensor.append(sensor_t.copy())
+        p.stepSimulation()
+        time.sleep(delta_t)
+
+        # rst = p.calculateInverseKinematics(robotId, 5, list(data[-t]), targetOrientation=r)
+
+        # for idx, theta in enumerate(rst):
+        #     p.setJointMotorControl2(bodyUniqueId=robotId, jointIndex=idx,
+        #                             controlMode=p.POSITION_CONTROL,
+        #                             targetPosition=rst[idx],
+        #                             force=50)
+
+
+
+        # # calculateInverseDynamics
+        # sensor_t_np = np.array(sensor[-1])
+        # if len(sensor)>1: sensor_t_np_before = np.array(sensor[-2])
+        # else: sensor_t_np_before = np.array(sensor[-1])
+
+        # theta = sensor_t_np[:, 0]
+        # theta_dot = sensor_t_np_before[:, 1]
+        # theta_dot2 = (sensor_t_np[:, 1]-sensor_t_np_before[:, 1])/delta_t
+
+        # tau = sensor_t_np[:, 2]
+        # tau_list.append(tau)
+
+        # # get the dynamic para
+        # G_term = p.calculateInverseDynamics(robotId,
+        #                     objPositions=list(theta),
+        #                     objVelocities=zero_list,
+        #                     objAccelerations=zero_list)
+        # C_term_with_G = p.calculateInverseDynamics(robotId,
+        #                     objPositions=list(theta),
+        #                     objVelocities=list(theta_dot),
+        #                     objAccelerations=zero_list)
+        # C_term = np.array(C_term_with_G) - np.array(G_term)
+
+
+        # M_theta = np.array(p.calculateMassMatrix(robotId, list(theta)))
+
+        # coriolis_list.append(C_term.copy())
+        # mass_matrix_list.append(M_theta.copy())
+        # gravity_list.append(list(G_term).copy())
+        # joint_p_list.append(theta.copy())
+
+        # if M_theta_prev is None: M_theta_prev = M_theta
+        # if theta_prev is None: theta_prev = theta
+        # if theta_dot_prev is None: theta_dot_prev = theta_dot
+
+        # M_theta_dot = (M_theta_prev-M_theta)/delta_t
+        # CT_q_dot = - C_term + np.dot(M_theta_dot, theta_dot)
+
+        # numerator = r_k - np.dot(np.dot(K, M_theta), theta_dot) +\
+        #             np.dot(np.dot(K, M_theta_prev), theta_dot_prev) +\
+        #             np.dot(K, (tau + CT_q_dot - G_term))*delta_t
+        # r_ka1 = np.dot(np.linalg.pinv(1+K*delta_t), numerator)
+        # r_ka1_list.append(r_ka1)
+
+        # # print(G_term, C_term_with_G, C_term)
+        # force_dynamic_t = p.calculateInverseDynamics(robotId,
+        #                     objPositions=list(theta),
+        #                     objVelocities=list(theta_dot),
+        #                     objAccelerations=list(theta_dot2))
+        # force_dynamic.append(force_dynamic_t)
+
+        # # contact.append(p.getContactPoints(robotId, obstacleId)==())
+
+        # M_theta_prev = M_theta
+        # theta_prev = theta
+        # theta_dot_prev = theta_dot
+        # r_k = r_ka1
+
+
+
