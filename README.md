@@ -72,7 +72,7 @@ python ident_single.py
 ---
 
 ### 🧪 Try in Simulation with UI (**Recommended**)
-
+We deployed our algorithm in the simulation, allowing the selection of force-applied members through an interactive UI, and printed the detection results.
 ```bash
 cd ident/sim/
 python sim_interaction_qt.py
