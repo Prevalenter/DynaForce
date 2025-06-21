@@ -1,1 +1,0 @@
-bottle_urdf_path = "../../isaac/assets/hand2hand/bottle/bottle.urdf"

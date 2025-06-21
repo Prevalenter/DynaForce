@@ -50,7 +50,7 @@ if __name__ == '__main__':
     torque = np.load(f'../../data/ident/torque_list_{joint_idx}_{exp_idx}.npy')
     
     torque[torque>32767] = torque[torque>32767]- 65536
-    torque = torque*urdf_sign
+    torque = torque*urdf_sign/100
 
     q = q[50:450, c_begin:c_end] 
     qd = qd[50:450, c_begin:c_end]
@@ -77,9 +77,14 @@ if __name__ == '__main__':
     plt.legend()
     plt.show()
 
-    
-    np.save(f'beta_{joint_idx}.npy', beta_ols)
+    print(pred_ols.shape)
 
+    for i in range(2, 2):
+        plt.subplot(2, 2, 1+i)
+        plt.plot(pred_ols[:, i], label='pred')
+        plt.plot(tau[:, i], label=f'gt')
+        plt.title(f'J {i}')
+    plt.show()
 
 
 

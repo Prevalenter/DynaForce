@@ -6,9 +6,9 @@
 
 > **Note:** This paper is currently under review. Additional code and resources will be released upon acceptance.
 
-
-<img src="https://github.com/user-attachments/assets/195537c4-59bb-42a1-9ac5-b6a1b582fd4a" width="100%">
-
+<div style="text-align:center">
+    <img src="https://github.com/user-attachments/assets/195537c4-59bb-42a1-9ac5-b6a1b582fd4a" width="100%">
+</div>
 
 ---
 
@@ -41,7 +41,7 @@
 
 ```bash
 cd ident/sim/
-python pred_momentum.py --K 2.5
+python sim_interaction_qt.py
 ```
 
 ---

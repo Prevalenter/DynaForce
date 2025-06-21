@@ -16,28 +16,25 @@ from sklearn.metrics import mean_absolute_percentage_error
 import scipy.signal as signal
 import time
 
+def smape(y_true, y_pred):
+    numerator = np.abs(y_true - y_pred)
+    denominator = (np.abs(y_true) + np.abs(y_pred)) / 2
+    # 避免除以零（如果 y_true 和 y_pred 同时为零）
+    smape_val = np.mean(np.where(denominator == 0, 0, numerator / denominator)) * 100
+    return smape_val
+
+
 
 if __name__ == '__main__':
     # fix the seed of numpy and random
     np.random.seed(42)
+
     
+    rst_mse = np.zeros((3, 3, 4))
+    rst_pcc = np.zeros((3, 3, 4))
+
     
-    # joint_idx, exp_idx, algo = 3, 4, 6
-    # exp_all = [0, 1, 2, 3, 4]
-    
-    rst_mse = np.zeros((3, 3, 6))
-    rst_pcc = np.zeros((3, 3, 6))
-    rst_mape = np.zeros((3, 3, 6))
-    
-    # = ['ols', 'wls', 'irls', 'ransac', 'lmi', 'lmi_ransac']
-    # algo_dict = {
-    #     'ols': 0,
-    #     'wls': 1,
-    #     'irls': 2,
-    #     'ransac': 3,
-    #     'lmi': 4,
-    #     # 'lmi_ransac': 5
-    # }
+
     algo_dict = {
         'ransac': 0,
         'wls': 1,
@@ -63,12 +60,9 @@ if __name__ == '__main__':
         
         finger = IdentFingaer(f'../../data/model/gx11pm_finger{joint_idx+1}.pkl', joint_mask=joint_mask)
        
-        
         q_raw = np.load(f'../../data/ident/pos_list_{joint_idx}_{exp_idx}.npy')
         torque_raw = np.load(f'../../data/ident/torque_list_{joint_idx}_{exp_idx}.npy')
         t_list_raw = np.load(f'../../data/ident/t_list_{joint_idx}_{exp_idx}.npy')
-
-        # breakpoint()
 
 
         for algo in algo_list:
@@ -76,7 +70,7 @@ if __name__ == '__main__':
             print(f'algo: {algo}')
             mse_list = []
             pcc_list = []
-            mape_list = []
+
             for exp_save_idx, exp_idx in enumerate([0, 1, 3]):
 
                 # get beta
@@ -97,53 +91,30 @@ if __name__ == '__main__':
                 # print(tau_pred.shape, torque.shape,torque[:, joint_mask].shape)
                 mse_val = mse(tau_pred, torque[:, joint_mask])
                 pcc_val = np.corrcoef(tau_pred.flatten(), torque[:, joint_mask].flatten())[0, 1]
-                # breakpoint()
-                torque_process = torque[:, joint_mask].flatten().copy()
-                threshold = 0.1
-                torque_process[(torque_process < threshold)*(torque_process>=0)] = threshold
-                torque_process[(torque_process > -threshold)*(torque_process<=0)] = -threshold
-                mape_val = mean_absolute_percentage_error(torque_process, tau_pred.flatten())
-                # breakpoint()
-                
-                # rel_err = relative_error(tau_pred[:, 0], torque[:, joint_mask][:, 0])
-                # rel_err = mean_absolute_percentage_error(np.asarray(torque[:, joint_mask]),
-                #                                          np.asarray(tau_pred)+100
-                #                                          )
-                # breakpoint()
-                
+
                 
                 mse_list.append(mse_val)
                 pcc_list.append(pcc_val)
-                mape_list.append(mape_val)
-                
+
                 rst_mse[joint_idx, exp_save_idx, algo_dict[algo]] = mse_val
                 rst_pcc[joint_idx, exp_save_idx, algo_dict[algo]] = pcc_val
-                rst_mape[joint_idx, exp_save_idx, algo_dict[algo]] = mape_val
+
                 
             mse_val_mean = np.mean(mse_list)
             # rel_err_mean = np.mean(rel_err_list)
             pcc_val_mean = np.mean(pcc_list)
-            mape_val_mean = np.mean(mape_list)
 
             
             print(f'mse: {mse_val_mean}')
             print(f'pcc: {pcc_val_mean}')
-            print(f'mape: {mape_val_mean}')
+
             
-            # print(tau_pred.shape, torque.shape)
-        
-        # for i in range(3):
-        #     plt.subplot(3, 1, i+1)
-        #     plt.plot(tau_pred[:, i], label='pred')
-        #     plt.plot(torque[:, i], label='gt')
-        #     plt.legend()
-        # plt.show()
+
     print('rst_mse', rst_mse.mean(axis=(0)).T)
     print(rst_mse.mean(axis=(0, 1)))
     print('rst_pcc', rst_pcc.mean(axis=(0)).T)
     print(rst_pcc.mean(axis=(0, 1)))
-    print('rst_mape', rst_mape.mean(axis=(0)).T)
-    print(rst_mape.mean(axis=(0, 1)))
+
     breakpoint()
     
 
