@@ -42,66 +42,11 @@ if __name__ == '__main__':
 
     torque_norm = 1000
 
-    # # breakpoint()
-    # res_tau = torque[:, :3]/torque_norm
-    # force_pred_no_ident = np.linalg.pinv(jacobian_np.round(2).T)[:, joint_mask]@res_tau.T
-    # print(force_pred_no_ident.shape)
-    # np.save(f'{data_dir}/force_pred_no_ident.npy', force_pred_no_ident.T)
-    # # breakpoint()
-    # force_pred = np.linalg.norm(force_pred_no_ident, axis=0)
-    # print(force_pred.shape)
-
-
-    last_acc = np.zeros(11)
-    last_vel = np.zeros(11)
-    last_pos = np.zeros(11)
-
-    ema_factor = [0.8, 0.8, 0.8]
-    force_fingers = [
-        np.zeros((3, 1)),
-        np.zeros((3, 1)),
-        np.zeros((3, 1)),
-    ]
-    
-    last_time = 0.0
-    
-    force_pred_list = []
-    force_pred_raw_list = []
-    for t in range(pos.shape[0]-2):
-        print(t)
-        
-        cur_t = time_list[t]
-        cur = torque[t]*hand_force.urdf_sign[0]/torque_norm
-
-        cur_pos = pos[t].copy()*(np.pi/180)*hand_force.urdf_sign[0]
-        cur_vel = (cur_pos - last_pos) / (cur_t - last_time)
-        cur_acc = (cur_vel - last_vel) / (cur_t - last_time)
-        
-        if t>=10:
-            force_pred = hand_force.estimate_force_without_threshold(cur_pos, cur_vel, cur_acc, cur, default_joint)
-            
-            # for finger_idx in range(3):
-            #     force_fingers[finger_idx] = force_fingers[finger_idx]*ema_factor[finger_idx] +\
-            #                                     force_pred[finger_idx]*(1-ema_factor[finger_idx])
-                                                
-            force_pred_list.append(force_fingers[0].copy())
-            force_pred_raw_list.append(force_pred[0].copy())
-
-    
-        last_pos = cur_pos.copy()
-        last_vel = cur_vel
-        last_acc = cur_acc
-        last_time = cur_t
-
-    
-    force_pred_list = np.array(force_pred_list)
-    force_norm = np.linalg.norm(force_pred_list, axis=(1, 2))
-    # plt.figure(figsize=(10, 10))
-    # plt.scatter(np.abs(force[10:]), np.abs(force_norm))
-
-    np.save(f'{data_dir}/force_pred_list.npy', force_pred_list)
-    
-    # force_pred_raw_list
-    np.save(f'{data_dir}/force_pred_raw_list.npy', force_pred_raw_list)
-
-
+    # breakpoint()
+    res_tau = torque[:, :3]/torque_norm
+    force_pred_no_ident = np.linalg.pinv(jacobian_np.round(2).T)[:, joint_mask]@res_tau.T
+    print(force_pred_no_ident.shape)
+    np.save(f'{data_dir}/force_pred_no_ident.npy', force_pred_no_ident.T)
+    # breakpoint()
+    force_pred = np.linalg.norm(force_pred_no_ident, axis=0)
+    print(force_pred.shape)

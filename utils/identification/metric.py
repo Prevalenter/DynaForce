@@ -6,7 +6,7 @@ def mse(tau_gt, tau_pred):
 	return np.linalg.norm(tau_pred - tau_gt)**2 / tau_gt.shape[0]
 
 def relative_error(tau_gt, tau_pred):
-	return np.linalg.norm(tau_pred - tau_gt) / np.linalg.norm(tau_gt+5e-2) * 100
+	return np.linalg.norm(tau_pred - tau_gt) / np.linalg.norm(tau_gt+1e-1) * 100
 
 
 

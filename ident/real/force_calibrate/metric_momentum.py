@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 def correlation_coefficient(y_true, y_pred):
     return np.corrcoef(y_true, y_pred)[0, 1]
 
-# import the relative error
-def relative_error(y_true, y_pred):
-    return np.abs((y_true - y_pred) / (y_true+6e-1))
 
 def mse(y_true, y_pred):
     return ((y_true - y_pred) ** 2).mean()
