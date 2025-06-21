@@ -6,6 +6,8 @@
 
 > **Note:** This paper is currently under review. Additional code and resources will be released upon acceptance.
 
+![5月23日](https://github.com/user-attachments/assets/195537c4-59bb-42a1-9ac5-b6a1b582fd4a)
+
 ---
 
 ## 🚧 TODO
