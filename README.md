@@ -7,7 +7,7 @@
 > **Note:** This paper is currently under review. Additional code and resources will be released upon acceptance.
 
 <div style="text-align:center">
-    <img src="https://github.com/user-attachments/assets/195537c4-59bb-42a1-9ac5-b6a1b582fd4a" width="100%">
+    <img src="https://github.com/user-attachments/assets/28d6ae04-2db4-4f01-ad83-5c735a70d5cc" width="100%">
 </div>
 
 ---
@@ -77,6 +77,11 @@ python ident_single.py
 cd ident/sim/
 python sim_interaction_qt.py
 ```
+
+
+<div style="text-align:center">
+    <img src="https://github.com/user-attachments/assets/72afd041-943a-4011-bf4a-8e8b357d9397" width="100%">
+</div>
 
 ---
 
