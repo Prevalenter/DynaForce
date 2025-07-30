@@ -1,8 +1,8 @@
-# **DynaForce: Sensorless Contact Estimation for Dexterous Manipulation**
+# **Dexsensorless: Sensorless Contact Estimation for Dexterous Manipulation**
 
 🔗 [Project Homepage](https://sites.google.com/view/dex-sensorless/)
 
-**DynaForce** is an open-source framework that estimates contact forces from joint torques using robotic dynamics, enabling **sensorless force estimation** in dexterous manipulation tasks.
+**Dexsensorless** is an open-source framework that estimates contact forces from joint torques using robotic dynamics, enabling **sensorless force estimation** in dexterous manipulation tasks.
 
 > **Note:** This paper is currently under review. Additional code and resources will be released upon acceptance.
 
