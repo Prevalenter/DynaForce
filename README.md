@@ -17,7 +17,7 @@
 - [x] Identify base inertia parameters for the robot hand  
 - [x] Implement momentum-based collision detection  
 - [x] Expand PyQt UI for easier finger/link selection  
-- [ ] Validate real-world force estimation via collision experiments  
+- [x] Validate real-world force estimation via collision experiments  
 - [ ]  Training code for imitation learning
 
 ---
@@ -89,7 +89,7 @@ python sim_interaction_qt.py
 
 ```bash
 cd ident/real/fore_calibrate/
-python pred_momentum.py --K 2.5
+python pred_nacfo.py --K 2.5
 ```
 
 ---

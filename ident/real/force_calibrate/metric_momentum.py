@@ -74,24 +74,28 @@ if __name__=="__main__":
     # --- Subplots for MSE, MAPE, and Correlation Coefficient ---
     fig, axs = plt.subplots(1, 3, figsize=(10, 3), sharex=True)
 
-    axs[0].plot(k_list, momentum_mse_list, '-o', label='momentum', markersize=8, alpha=0.7)
+    axs[0].plot(k_list, momentum_mse_list, '-o', label='NACFO', markersize=8, alpha=0.7)
     axs[0].plot(k_list, direct_mse_list, '--', label='direct', markersize=8, alpha=0.7)
     axs[0].set_ylabel('MSE')
+    axs[0].set_xlabel('K')
     axs[0].legend()
     axs[0].set_title('Mean Squared Error')
 
-    axs[1].plot(k_list, momentum_mape_list, '-o', label='momentum', markersize=8, alpha=0.7)
+    axs[1].plot(k_list, momentum_mape_list, '-o', label='NACFO', markersize=8, alpha=0.7)
     axs[1].plot(k_list, direct_mape_list, '--', label='direct', markersize=8, alpha=0.7)
     axs[1].set_ylabel('MAPE')
+    axs[1].set_xlabel('K')
     axs[1].legend()
     axs[1].set_title('Mean Absolute Percentage Error')
 
-    axs[2].plot(k_list, momentum_corr_list, '-o', label='momentum', markersize=8, alpha=0.7)
+    axs[2].plot(k_list, momentum_corr_list, '-o', label='NACFO', markersize=8, alpha=0.7)
     axs[2].plot(k_list, direct_corr_list, '--', label='direct', markersize=8, alpha=0.7)
     axs[2].set_ylabel('Correlation Coefficient')
     axs[2].set_xlabel('K')
     axs[2].legend()
     axs[2].set_title('Correlation Coefficient')
+    
+    plt.subplots_adjust(wspace=0.3, bottom=0.25)
 
     # plt.tight_layout()
     plt.show()
